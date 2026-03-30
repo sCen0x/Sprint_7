@@ -19,9 +19,11 @@ class TestOrderCreate:
     def test_order_create_color_parametrize_success(self, order_data):
         order_data_json = json.dumps(order_data)
         headers = {'Content-Type': 'application/json'}
-
-        response = requests.post(Urls.url_orders_create, data=order_data_json, headers=headers)
-        assert response.status_code == 201, f"Unexpected status code: {response.status_code}"
-
-        response_json = response.json()
-        assert 'track' in response_json, f"'track' key not found in response. Response: {response_json}"
+        
+        with allure.step(f'Отправить POST-запрос на создание заказа с данными: {order_data}'):
+            response = requests.post(Urls.url_orders_create, data=order_data_json, headers=headers)
+        with allure.step('Проверить, что статус код ответа равен 201 (Created)'):
+            assert response.status_code == 201, f"Unexpected status code: {response.status_code}"
+        with allure.step('Проверить, что тело ответа содержит поле "track"'):
+            response_json = response.json()
+            assert 'track' in response_json, f"'track' key not found in response. Response: {response_json}"
