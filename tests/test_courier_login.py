@@ -8,15 +8,9 @@ class TestCourierLogin:
 
     @allure.title('Проверка успешной авторизации курьера при вводе валидных данных')
     @allure.description('Создание нового аккаунта курьера. Авторизация c ним в системе. Проверка кода и тела ответа.')
-    def test_courier_login_success(self, courier_data):
-        payload = courier_data
-        login = payload['login']
-        password = payload['password']
-
-        with allure.step(f'Отправить POST-запрос на создание курьера с логином: {login}'):
-            register_response = requests.post(Urls.url_courier, data=payload)
-        with allure.step('Проверить, что регистрация прошла успешно (статус 201)'):
-            assert register_response.status_code == 201, "Registration should succeed"
+    def test_courier_login_success(self, existing_courier):
+        login = existing_courier['login']
+        password = existing_courier['password']
 
         login_payload = {
             'login': login,
@@ -33,16 +27,10 @@ class TestCourierLogin:
 
     @allure.title('Проверка получения ошибки при авторизации курьера с некорректным паролем.')
     @allure.description('Создание нового аккаунта курьера. Авторизация с корректным логином и некорректным паролем. Проверка кода и тела ответа.')
-    def test_courier_login_wrong_password(self, courier_data):
-        payload = courier_data
-        login = payload['login']
-
-        with allure.step(f'Отправить POST-запрос на создание курьера с логином: {login}'):
-            register_response = requests.post(Urls.url_courier, data=payload)
-        with allure.step('Проверить, что регистрация прошла успешно (статус 201)'):
-            assert register_response.status_code == 201, "Registration should succeed"
-        
+    def test_courier_login_wrong_password(self, existing_courier):
+        login = existing_courier['login']
         wrong_password = generate_random_string(10)
+
         login_payload = {
             'login': login,
             'password': wrong_password
@@ -61,15 +49,9 @@ class TestCourierLogin:
     @allure.title('Проверка получения ошибки при авторизации курьера с некорректным логином.')
     @allure.description('Создание нового аккаунта курьера. Авторизация с некорректным логином и корректным паролем. Проверка кода и тела ответа.')
     def test_courier_login_wrong_login(self, courier_data):
-        payload = courier_data
-        password = payload['password']
-
-        with allure.step(f'Отправить POST-запрос на создание курьера'):
-            register_response = requests.post(Urls.url_courier, data=payload)
-        with allure.step('Проверить, что регистрация прошла успешно (статус 201)'):
-            assert register_response.status_code == 201, "Registration should succeed"
-        
+        password = courier_data['password']
         wrong_login = generate_random_string(10)
+        
         login_payload = {
             'login': wrong_login,
             'password': password
@@ -87,13 +69,7 @@ class TestCourierLogin:
     @allure.title('Проверка получения ошибки при авторизации курьера с пустым полем логин.')
     @allure.description('В тест передаётся набор данных с пустым логином. Проверка кода и тела ответа.')
     def test_courier_login_empty_login(self, courier_data):
-        payload = courier_data
-        password = payload['password']
-        
-        with allure.step(f'Отправить POST-запрос на создание курьера'):
-            register_response = requests.post(Urls.url_courier, data=payload)
-        with allure.step('Проверить, что регистрация прошла успешно (статус 201)'):
-            assert register_response.status_code == 201, "Registration should succeed"
+        password = courier_data['password']
         
         login_payload = {
             'login': '',
@@ -113,13 +89,7 @@ class TestCourierLogin:
     @allure.title('Проверка получения ошибки при авторизации курьера с пустым полем пароль.')
     @allure.description('В тест передаётся набор данных с пустым паролем. Проверка кода и тела ответа.')
     def test_courier_login_empty_password(self, courier_data):
-        payload = courier_data
-        login = payload['login']
-        
-        with allure.step(f'Отправить POST-запрос на создание курьера с логином: {login}'):
-            register_response = requests.post(Urls.url_courier, data=payload)
-        with allure.step('Проверить, что регистрация прошла успешно (статус 201)'):
-            assert register_response.status_code == 201, "Registration should succeed"
+        login = courier_data['login']
         
         login_payload = {
             'login': login,

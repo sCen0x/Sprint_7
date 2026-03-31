@@ -21,15 +21,8 @@ class TestCourierCreate:
 
     @allure.title('Проверка ошибки при повторном использовании логина для создания аккаунта курьера.')
     @allure.description('Создание нового аккаунта. Повторный запрос на создание аккаунта курьера используя такой же логин. Проверка кода и тела ответа.')
-    def test_create_courier_existing_login(self, courier_data):
-        payload = courier_data
-        login = payload['login']
-
-        with allure.step(f'Отправить POST-запрос на создание курьера с логином: {login}'):
-            response_first = requests.post(Urls.url_courier, data=payload)
-        with allure.step('Проверить, что первый запрос выполнен успешно (статус 201)'):
-            assert response_first.status_code == 201, \
-                f"First registration failed. Status: {response_first.status_code}, Response: {response_first.text}"
+    def test_create_courier_existing_login(self, existing_courier):
+        login = existing_courier['login']
 
         payload_duplicate = {
             'login': login,
